@@ -18,26 +18,45 @@ router.get('/add', (req, res) => res.render('add'));
 
 // Add a gig
 router.post('/add', (req, res) => {
-  const data = {
-    title: 'Simple WordPress website',
-    technologies: 'WordPress, PHP, HTML, CSS',
-    budget: '$1,000',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque lobortis consequat leo, id condimentum lacus. Nam blandit turpis eros, quis viverra tortor semper in. In nisi lorem, feugiat id fringilla et, scelerisque nec lacus. Nam hendrerit, urna vel eleifend fringilla, diam mauris gravida neque, sit amet condimentum turpis lacus ut leo. Sed aliquam fringilla imperdiet. Nam massa nisi, feugiat nec arcu nec, fringilla pulvinar augue.',
-    contact_email: 'user2@gmail.com'
+  let { title, technologies, budget, description, contact_email } = req.body;
+  let errors = [];
+
+  // Validate fields
+  if(!title) {
+    errors.push({ text: 'Please add a title!'})
+  }
+  if(!technologies) {
+    errors.push({ text: 'Please add some technologies!'})
+  }
+  if(!description) {
+    errors.push({ text: 'Please add a description!'})
+  }
+  if(!contact_email) {
+    errors.push({ text: 'Please add a contact email!'})
   }
 
-  let { title, technologies, budget, description, contact_email } = data;
-
-  // Insert into table
-  Gig.create({
-    title,
-    technologies,
-    description,
-    budget,
-    contact_email
-  })
-    .then(gig => res.redirect('/gigs'))
-    .catch(err => console.log(err));
+  // Check for errors
+  if(errors.length > 0) {
+    res.render('add', {
+      errors,
+      title, 
+      technologies, 
+      budget, 
+      description, 
+      contact_email
+    })
+  } else {
+    // Insert into table
+    Gig.create({
+      title,
+      technologies,
+      description,
+      budget,
+      contact_email
+    })
+      .then(gig => res.redirect('/gigs'))
+      .catch(err => console.log(err));
+  }
 });
 
 module.exports = router;
