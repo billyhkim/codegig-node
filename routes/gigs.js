@@ -13,8 +13,11 @@ router.get('/', (req, res) =>
   })
   .catch(err => console.log(err)));
 
+// Display add gig from
+router.get('/add', (req, res) => res.render('add'));
+
 // Add a gig
-router.get('/add', (req, res) => {
+router.post('/add', (req, res) => {
   const data = {
     title: 'Simple WordPress website',
     technologies: 'WordPress, PHP, HTML, CSS',
